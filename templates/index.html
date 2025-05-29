@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Simple Chatbot</title>
+    <style>
+        #chatbox { height: 300px; overflow-y: scroll; border: 1px solid #ccc; padding: 10px; }
+        .msg { margin: 5px; }
+    </style>
+</head>
+<body>
+    <h2>Chat with Bot</h2>
+    <div id="chatbox"></div>
+    <input id="userInput" type="text" placeholder="Type a message" />
+    <button onclick="sendMessage()">Send</button>
+
+    <script>
+        function sendMessage() {
+            const input = document.getElementById("userInput").value;
+            fetch("/chat", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ message: input })
+            })
+            .then(res => res.json())
+            .then(data => {
+                const chatbox = document.getElementById("chatbox");
+                chatbox.innerHTML += `<div class="msg"><b>You:</b> ${input}</div>`;
+                chatbox.innerHTML += `<div class="msg"><b>Bot:</b> ${data.reply}</div>`;
+                document.getElementById("userInput").value = "";
+                chatbox.scrollTop = chatbox.scrollHeight;
+            });
+        }
+    </script>
+</body>
+</html>
